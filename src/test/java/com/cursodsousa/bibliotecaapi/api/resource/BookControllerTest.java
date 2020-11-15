@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.cursodsousa.bibliotecaapi.api.dto.BookDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class)
@@ -31,7 +32,9 @@ public class BookControllerTest {
 	@DisplayName("Deve criar um livro com sucesso.")
 	public void createBookTest() throws Exception {
 
-		String json = new ObjectMapper().writeValueAsString(null);
+		BookDTO bookDTO = BookDTO.builder().author("Artur").title("As aventuras").isbn("001").build();
+
+		String json = new ObjectMapper().writeValueAsString(bookDTO);
 
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
 				.post(BOOK_API)
@@ -43,9 +46,9 @@ public class BookControllerTest {
 				.perform(request)
 				.andExpect(MockMvcResultMatchers.status().isCreated())
 				.andExpect(MockMvcResultMatchers.jsonPath("id").isNotEmpty())
-				.andExpect(MockMvcResultMatchers.jsonPath("title").value("Meu livro"))
-				.andExpect(MockMvcResultMatchers.jsonPath("author").value("Autor"))
-				.andExpect(MockMvcResultMatchers.jsonPath("isbn").value("1213212"));
+				.andExpect(MockMvcResultMatchers.jsonPath("title").value(bookDTO.getTitle()))
+				.andExpect(MockMvcResultMatchers.jsonPath("author").value(bookDTO.getAuthor()))
+				.andExpect(MockMvcResultMatchers.jsonPath("isbn").value(bookDTO.getIsbn()));
 	}
 
 	@Test
