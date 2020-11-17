@@ -14,10 +14,10 @@
 	</parent>
 
 	<groupId>com.cursodsousa</groupId>
-	<artifactId>library-api</artifactId>
+	<artifactId>biblioteca-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<name>library-api</name>
+	<name>biblioteca-api</name>
 	<description>API do projecto de bibliotecas</description>
 
 	<properties>
@@ -56,6 +56,12 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>2.3.0</version>
 		</dependency>
 
 		<dependency>

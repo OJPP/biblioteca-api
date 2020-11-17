@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Book {
 
-	private long id;
+	private Long id;
 	private String title;
 	private String author;
 	private String isbn;

@@ -1,5 +1,7 @@
 package com.cursodsousa.bibliotecaapi.api.resource;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,9 @@ public class BookController {
 
 	private BookService bookService;
 
+	@Autowired
+	private ModelMapper modelMapper;
+
 	public BookController(BookService bookService) {
 		this.bookService = bookService;
 	}
@@ -25,14 +30,10 @@ public class BookController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public BookDTO salvar(@RequestBody BookDTO bookDTO) {
 
-		Book book = Book.builder().title(bookDTO.getTitle()).author(bookDTO.getAuthor()).isbn(bookDTO.getIsbn()).build();
-		
+		Book book = modelMapper.map(bookDTO, Book.class);
 		Book bookSaved = bookService.save(book);
 
-		BookDTO bookSavedDTO = BookDTO.builder().id(bookSaved.getId()).title(bookSaved.getTitle()).author(bookSaved.getAuthor()).isbn(bookSaved.getIsbn()).build();
-
-		return bookSavedDTO;
-
+		return modelMapper.map(bookSaved, BookDTO.class);
 	}
 
 }
