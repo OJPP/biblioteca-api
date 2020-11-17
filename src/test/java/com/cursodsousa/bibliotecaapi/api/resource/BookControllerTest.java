@@ -3,9 +3,12 @@ package com.cursodsousa.bibliotecaapi.api.resource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -15,6 +18,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.cursodsousa.bibliotecaapi.api.dto.BookDTO;
+import com.cursodsousa.bibliotecaapi.api.service.BookService;
+import com.cursodsousa.bibliotecaapi.model.entity.Book;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class)
@@ -28,11 +33,18 @@ public class BookControllerTest {
 	@Autowired
 	MockMvc mockMvc;
 
+	@MockBean
+	BookService bookService;
+	
 	@Test
 	@DisplayName("Deve criar um livro com sucesso.")
 	public void createBookTest() throws Exception {
 
 		BookDTO bookDTO = BookDTO.builder().author("Artur").title("As aventuras").isbn("001").build();
+
+		// Simular o comportamento do método save da classe de serviço bookService
+		Book savedBook = Book.builder().id(10).author("Artur").title("As aventuras").isbn("001").build();
+		BDDMockito.given(bookService.save(Mockito.any(Book.class))).willReturn(savedBook);
 
 		String json = new ObjectMapper().writeValueAsString(bookDTO);
 
