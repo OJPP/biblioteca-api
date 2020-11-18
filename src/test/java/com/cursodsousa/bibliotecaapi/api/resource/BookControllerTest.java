@@ -1,5 +1,6 @@
 package com.cursodsousa.bibliotecaapi.api.resource;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,26 +21,35 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.cursodsousa.bibliotecaapi.api.dto.BookDTO;
 import com.cursodsousa.bibliotecaapi.api.service.BookService;
 import com.cursodsousa.bibliotecaapi.model.entity.Book;
+import com.cursodsousa.bibliotecaapi.model.repository.BookRepository;
+import com.cursodsousa.bibliotecaapi.services.impl.BookServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+// Necessário para testar um controlador do Spring Boot. O Spring vai criar um mini contexto de injeção de dependências
+// para executar os testes.
 @ExtendWith(SpringExtension.class)
+// Para executar os testes com o perfil de testes. Pode-se definir configurações específicas para quando
+// executamos com este perfil
 @ActiveProfiles("test")
+//
 @WebMvcTest
+//
 @AutoConfigureMockMvc
 public class BookControllerTest {
 
-	static String BOOK_API = "/api/books";
+	static final String BOOK_API = "/api/books";
 
 	@Autowired
-	MockMvc mockMvc;
+	MockMvc mockMvc; // Este objecto é que permite mocar as nossas requisicoes http
 
 	@MockBean
 	BookService bookService;
-	
+
 	@Test
 	@DisplayName("Deve criar um livro com sucesso.")
 	public void createBookTest() throws Exception {
 
+		// Cenário
 		BookDTO bookDTO = BookDTO.builder().author("Artur").title("As aventuras").isbn("001").build();
 
 		// Simular o comportamento do método save da classe de serviço bookService
@@ -54,6 +64,7 @@ public class BookControllerTest {
 				.accept(MediaType.APPLICATION_JSON)
 				.content(json);
 
+		// Acção e Verificação
 		mockMvc
 				.perform(request)
 				.andExpect(MockMvcResultMatchers.status().isCreated())
