@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.cursodsousa.bibliotecaapi.api.dto.BookDTO;
+import com.cursodsousa.bibliotecaapi.api.exceptions.BusinessException;
 import com.cursodsousa.bibliotecaapi.api.service.BookService;
 import com.cursodsousa.bibliotecaapi.model.entity.Book;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,7 +49,7 @@ public class BookControllerTest {
 	public void createBookTest() throws Exception {
 
 		// Cenário
-		BookDTO bookDTO = BookDTO.builder().author("Artur").title("As aventuras").isbn("001").build();
+		BookDTO bookDTO = createNewBook();
 
 		// Simular o comportamento do método save da classe de serviço bookService
 		Book savedBook = Book.builder().id(10l).author("Artur").title("As aventuras").isbn("001").build();
@@ -92,6 +93,38 @@ public class BookControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isBadRequest())
 				.andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize(3)));
 
+	}
+
+	@Test
+	@DisplayName("Deve lançar erro ao tentar cadastrar um livro com isbn já utilizado por outro.")
+	public void createBookWithDuplicatedIsbn() throws Exception {
+
+		// Cenário
+		BookDTO bookDTO = createNewBook();
+
+		String json = new ObjectMapper().writeValueAsString(bookDTO);
+		String mensagemErro = "Isbn já cadastrado.";
+
+		BDDMockito.given(bookService.save(Mockito.any(Book.class)))
+				.willThrow(new BusinessException(mensagemErro));
+
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+				.post(BOOK_API)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)
+				.content(json);
+
+		// Acção e Verificação
+		mockMvc
+				.perform(request)
+				.andExpect(MockMvcResultMatchers.status().isBadRequest())
+				.andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize(1)))
+				.andExpect(MockMvcResultMatchers.jsonPath("errors[0]").value(mensagemErro));
+
+	}
+
+	private BookDTO createNewBook() {
+		return BookDTO.builder().author("Artur").title("As aventuras").isbn("001").build();
 	}
 
 }
