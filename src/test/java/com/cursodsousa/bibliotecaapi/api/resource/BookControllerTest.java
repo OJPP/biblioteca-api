@@ -1,6 +1,6 @@
 package com.cursodsousa.bibliotecaapi.api.resource;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,8 +21,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.cursodsousa.bibliotecaapi.api.dto.BookDTO;
 import com.cursodsousa.bibliotecaapi.api.service.BookService;
 import com.cursodsousa.bibliotecaapi.model.entity.Book;
-import com.cursodsousa.bibliotecaapi.model.repository.BookRepository;
-import com.cursodsousa.bibliotecaapi.services.impl.BookServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 // Necessário para testar um controlador do Spring Boot. O Spring vai criar um mini contexto de injeção de dependências
@@ -72,11 +70,28 @@ public class BookControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("title").value(bookDTO.getTitle()))
 				.andExpect(MockMvcResultMatchers.jsonPath("author").value(bookDTO.getAuthor()))
 				.andExpect(MockMvcResultMatchers.jsonPath("isbn").value(bookDTO.getIsbn()));
+
 	}
 
 	@Test
 	@DisplayName("Deve lançar erro de validação quando não houver dados suficientes para criação de um livro.")
-	public void createInvalidBookTest() {
+	public void createInvalidBookTest() throws Exception {
+
+		// Cenário
+		String json = new ObjectMapper().writeValueAsString(new BookDTO());
+
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+				.post(BOOK_API)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)
+				.content(json);
+
+		// Acção e Verificação
+		mockMvc
+				.perform(request)
+				.andExpect(MockMvcResultMatchers.status().isBadRequest())
+				.andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize(3)));
+
 	}
 
 }
