@@ -1,7 +1,5 @@
 package com.cursodsousa.bibliotecaapi.api.resource;
 
-import java.util.Optional;
-
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.cursodsousa.bibliotecaapi.api.dto.BookDTO;
 import com.cursodsousa.bibliotecaapi.api.exceptions.ApiErros;
@@ -50,9 +49,10 @@ public class BookController {
 	@ResponseStatus(HttpStatus.OK)
 	public BookDTO obter(@PathVariable Long id) {
 
-		Book book = bookService.getById(id).get();
+		return bookService.getById(id)
+				.map(book -> modelMapper.map(book, BookDTO.class))
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-		return modelMapper.map(book, BookDTO.class);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
