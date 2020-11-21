@@ -1,5 +1,7 @@
 package com.cursodsousa.bibliotecaapi.api.resource;
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
@@ -8,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,6 +44,15 @@ public class BookController {
 		Book bookSaved = bookService.save(book);
 
 		return modelMapper.map(bookSaved, BookDTO.class);
+	}
+
+	@RequestMapping(value = "{id}", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	public BookDTO obter(@PathVariable Long id) {
+
+		Book book = bookService.getById(id).get();
+
+		return modelMapper.map(book, BookDTO.class);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)

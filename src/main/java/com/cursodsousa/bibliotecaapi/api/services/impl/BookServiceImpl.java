@@ -1,5 +1,7 @@
 package com.cursodsousa.bibliotecaapi.api.services.impl;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.cursodsousa.bibliotecaapi.api.exceptions.BusinessException;
@@ -24,6 +26,11 @@ public class BookServiceImpl implements BookService {
 		}
 
 		return bookRepository.save(book);
+	}
+
+	@Override
+	public Optional<Book> getById(Long id) {
+		return this.bookRepository.getById(id);
 	}
 
 }
