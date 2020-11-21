@@ -43,7 +43,7 @@ public class BookControllerTest {
 		BookDTO bookDTO = BookDTO.builder().author("Artur").title("As aventuras").isbn("001").build();
 
 		// Simular o comportamento do método save da classe de serviço bookService
-		Book savedBook = Book.builder().id(10).author("Artur").title("As aventuras").isbn("001").build();
+		Book savedBook = Book.builder().id(10l).author("Artur").title("As aventuras").isbn("001").build();
 		BDDMockito.given(bookService.save(Mockito.any(Book.class))).willReturn(savedBook);
 
 		String json = new ObjectMapper().writeValueAsString(bookDTO);
