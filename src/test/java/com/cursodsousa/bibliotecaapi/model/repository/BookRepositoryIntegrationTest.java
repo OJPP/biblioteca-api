@@ -2,6 +2,8 @@ package com.cursodsousa.bibliotecaapi.model.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +18,7 @@ import com.cursodsousa.bibliotecaapi.model.entity.Book;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @DataJpaTest
-public class BookRepositoryTest {
+public class BookRepositoryIntegrationTest {
 
 	@Autowired
 	TestEntityManager entityManager;
@@ -54,6 +56,26 @@ public class BookRepositoryTest {
 
 		// verificação
 		assertThat(exists).isFalse();
+
+	}
+
+	@Test
+	@DisplayName("Deve obter um livro por id.")
+	public void findByIdTest() {
+
+		// cenario
+		Book book = createValidBook("123");
+		entityManager.persist(book);
+
+		// accao
+		Optional<Book> bookOptional = bookRepository.findById(book.getId());
+
+		// verificação
+		assertThat(bookOptional.isPresent()).isTrue();
+		assertThat(bookOptional.get().getId()).isEqualTo(book.getId());
+		assertThat(bookOptional.get().getAuthor()).isEqualTo(book.getAuthor());
+		assertThat(bookOptional.get().getTitle()).isEqualTo(book.getTitle());
+		assertThat(bookOptional.get().getIsbn()).isEqualTo(book.getIsbn());
 
 	}
 

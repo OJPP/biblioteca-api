@@ -8,6 +8,4 @@ public interface BookRepository extends JpaRepository<Book, Long>{
 
 	boolean existsByIsbn(String isbn);
 
-	Book update(Book book);
-
 }

@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebMvcTest
 //
 @AutoConfigureMockMvc
-public class BookControllerTest {
+public class BookControllerUnitTest {
 
 	static final String BOOK_API = "/api/books";
 
