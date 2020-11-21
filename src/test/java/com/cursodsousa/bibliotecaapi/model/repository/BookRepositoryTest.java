@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.cursodsousa.bibliotecaapi.model.entity.Book;
+
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @DataJpaTest
@@ -29,6 +31,9 @@ public class BookRepositoryTest {
 		// cenario
 		String isbn = "123";
 
+		Book book = createValidBook(isbn);
+		entityManager.persist(book);
+
 		// accao
 		boolean exists = bookRepository.existsByIsbn(isbn);
 
@@ -36,5 +41,24 @@ public class BookRepositoryTest {
 		assertThat(exists).isTrue();
 
 	}
-	
+
+	@Test
+	@DisplayName("Deve retornar falso quando não existir um livro na base com o isbn informado.")
+	public void returnFalseWhenIsbnDoesNotExists() {
+
+		// cenario
+		String isbn = "123";
+
+		// accao
+		boolean exists = bookRepository.existsByIsbn(isbn);
+
+		// verificação
+		assertThat(exists).isFalse();
+
+	}
+
+	private Book createValidBook(String isbn) {
+		return Book.builder().title("As aventuras").author("Fulano").isbn(isbn).build();
+	}
+
 }
