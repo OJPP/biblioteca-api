@@ -55,6 +55,31 @@ public class BookController {
 
 	}
 
+	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void eliminar(@PathVariable Long id) {
+
+		Book book = bookService.getById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+		bookService.delete(book);
+
+	}
+
+	@RequestMapping(value = "{id}", method = RequestMethod.PUT)
+	@ResponseStatus(HttpStatus.OK)
+	public BookDTO actualizar(@RequestBody @Valid BookDTO bookDTO, @PathVariable Long id) {
+
+		return bookService.getById(id).map( book -> {
+
+			book.setAuthor(bookDTO.getAuthor());
+			book.setTitle(bookDTO.getTitle());
+			book = bookService.update(book);
+			return modelMapper.map(book, BookDTO.class);
+
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+	}
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ApiErros handleValidationExceptions(MethodArgumentNotValidException exception) {
