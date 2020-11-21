@@ -21,7 +21,7 @@ import com.cursodsousa.bibliotecaapi.model.repository.BookRepository;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-public class BookServiceTest {
+public class BookServiceUnitTest {
 
 	BookService bookService;
 
