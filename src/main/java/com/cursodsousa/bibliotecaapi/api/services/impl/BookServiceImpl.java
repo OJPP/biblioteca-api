@@ -1,7 +1,8 @@
-package com.cursodsousa.bibliotecaapi.services.impl;
+package com.cursodsousa.bibliotecaapi.api.services.impl;
 
 import org.springframework.stereotype.Service;
 
+import com.cursodsousa.bibliotecaapi.api.exceptions.BusinessException;
 import com.cursodsousa.bibliotecaapi.api.service.BookService;
 import com.cursodsousa.bibliotecaapi.model.entity.Book;
 import com.cursodsousa.bibliotecaapi.model.repository.BookRepository;
@@ -17,6 +18,11 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Book save(Book book) {
+		
+		if(bookRepository.existsByIsbn(book.getIsbn())) {
+			throw new BusinessException("Isbn já cadastrado.");
+		}
+
 		return bookRepository.save(book);
 	}
 
